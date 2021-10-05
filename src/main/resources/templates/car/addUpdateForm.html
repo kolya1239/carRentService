@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Работа с автомобилем</title>
+    <style type="text/css">
+        .link-light:hover {
+            color: #d1d8de !important;
+        }
+        .form-check-input:checked{
+            background-color: rgba(0,0,0,.55) !important;
+            border-color: rgba(0,0,0,.55) !important;
+        }
+        textarea {
+            height: 25rem;
+        }
+    </style>
+</head>
+<body class="bg-primary">
+<nav th:replace="/header :: header"></nav>
+<div class="container-fluid text-white pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12 h2 text-center" th:text="${addOrUpdateField} + ' автомобиля'"></div>
+        <form class="col-md-6 mt-3" th:object="${car}" onsubmit="return deleteOrUpdate(this);"  method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <h5 class="mb-3">Номер автомобиля</h5>
+                <input type="text" class="form-control mb-3" id="licencePlate" placeholder="x111xx" name="mark" th:field="*{licencePlate}" >
+                <h5 class="mb-3">Код региона регистрации</h5>
+                <input type="text" class="form-control mb-3" id="registrationCode" placeholder="77" name="mark" th:field="*{registrationCode}" >
+                <h5 class="mb-3">Марка автомобиля</h5>
+                <input type="text" class="form-control mb-3" id="mark" placeholder="BMW X1" name="mark" th:field="*{mark}" >
+                <h5 class="mb-3">Мощность двигателя(л.с.)</h5>
+                <input type="number" class="form-control mb-3" id="carPower" placeholder="Мощность двигателя" name="carPower" th:field="*{carPower}" >
+                <h5 class="mb-3">Объем бензобака(л.)</h5>
+                <input type="number" class="form-control mb-3" id="tankCapacity" placeholder="Объем бензобака" name="tankCapacity" th:field="*{tankCapacity}" >
+                <h5 class="mb-3">Цена за день аренды в рублях(максимум 2 знака после запятой).</h5>
+                <input type="number" step="0.01" class="form-control mb-3" id="price" placeholder="Цена за день аренды" name="price" th:field="*{price}" >
+                <h5 class="mb-3">Описание автомобиля</h5>
+                <textarea class="form-control mb-3" id="description" name="description" maxlength="2000" rows="3" placeholder="Данный автомобиль..." th:field="*{description}"></textarea>
+                <h5 class="mb-3">Выберите класс автомобиля</h5>
+                <select class="mb-3 form-select" name="carCLass" th:field="*{carClass}" aria-label="Выберите класс автомобиля">
+                    <!--/*@thymesVar id="carClass" type="com.example.carrentservice.enums.CarClass"*/-->
+                    <option th:each="carClass : ${carClassList}" th:value="${carClass}" th:text="${carClass.getCode()}"></option>
+                </select>
+                <h5 class="mb-3">Выберите тип топлива</h5>
+                <select class="mb-3 form-select" name="fuelType" th:field="*{fuelType}" aria-label="Выберите тип топлива">
+                    <!--/*@thymesVar id="fuelType" type="com.example.carrentservice.enums.FuelType"*/-->
+                    <option th:each="fuelType : ${fuelTypeList}" th:value="${fuelType}" th:text="${fuelType.getCode()}"></option>
+                </select>
+                <h5 class="mb-3">Выберите брэнд машины</h5>
+                <select class="mb-3 form-select" name="brandId" aria-label="Выберите брэнд">
+                    <!--/*@thymesVar id="brand" type="com.example.carrentservice.entities.Brand"*/-->
+                    <option th:each="brand : ${brandList}" th:value="${brand.getId()}" th:text="${brand.getName()}"></option>
+                </select>
+                <h5 class="mb-3">Выберите изображение автомобиля</h5>
+                <input th:if="${!exists}" type="file" name="imageFile" accept="image/png, image/jpeg" required />
+                <input th:if="${exists}" type="file" name="imageFile" accept="image/png, image/jpeg" />
+            </div>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button th:formaction="@{/car/addOrUpdate}" onclick="setFlag('send')" class="btn btn-outline-light mt-3" name="send">Отправить</button>
+            <button th:formaction="@{/car/delete}" onclick="setFlag('delete')" th:if="${exists}" class="btn btn-danger mt-3" name="delete">Удалить</button>
+        </form>
+    </div>
+</div>
+
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    let flag;
+    function deleteOrUpdate(button){
+        if(flag === "send"){
+            return checkFields();
+        } else {
+            return confirm('Вы точно хотите удалить автомобиль.');
+        }
+    }
+    function checkFields(){
+        if(confirm("Вы уверены что хотите добавить/изменить автомобиль?")){
+            let nameLength = document.getElementById('mark').value.length;
+            if(nameLength <= 3 || 45 <= nameLength){
+                alert("Марка автомобиля должна быть больше 3 символов и меньше 45.");
+                return false;
+            }
+
+            let descriptionLength = document.getElementById('description').value.length;
+            if(descriptionLength <= 10 || 2000 <= descriptionLength){
+                alert("Описание должно быть больше 10 символов и меньше 2000.");
+                return false;
+            }
+
+            let carPower = document.getElementById('carPower').value;
+            if(carPower <= 10 || 1000 <= carPower){
+                alert("Мощность двигателя должно быть больше 10л.с. и меньше 1000л.с.");
+                return false;
+            }
+
+            let tankCapacity = document.getElementById('tankCapacity').value;
+            if(tankCapacity < 20 || 160 < tankCapacity){
+                alert("Объем бензобака должен быть в диапазоне от 20 до 160 литров.");
+                return false;
+            }
+
+            let price = document.getElementById('price').value;
+            if(price <= 200 || 10000 <= price){
+                alert("Цена должна быть более 200р. и меньше 10000р.");
+                return false;
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function setFlag(flagValue){
+        flag = flagValue;
+    }
+
+    let carPowerInput = document.getElementById("carPower");
+    let tankCapacityInput = document.getElementById("tankCapacity");
+    carPowerInput.addEventListener("keydown", function (e) {
+        if (e.key === '.') {
+            e.preventDefault()
+        }
+    });
+    tankCapacityInput.addEventListener("keydown", function (e) {
+        if (e.key === '.') {
+            e.preventDefault()
+        }
+    });
+
+</script>
+</body>
+</html>

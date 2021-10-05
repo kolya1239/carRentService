@@ -1,0 +1,57 @@
+<nav th:fragment="header" class="navbar navbar-expand-lg navbar-light bg-light"
+     xmlns:sec="http://www.w3.org/1999/xhtml">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Главная</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/about">О нас</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">Связь с нами</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/complaintsSuggestions">Жалобы и предложения</a>
+                </li>
+                <li sec:authorize="isAuthenticated() == false" class="nav-item">
+                    <a class="nav-link" href="/login">Войти</a>
+                </li>
+                <li sec:authorize="isAuthenticated() == false" class="nav-item">
+                    <a class="nav-link" href="/registration">Регистрация</a>
+                </li>
+                <li sec:authorize="isAuthenticated()" class="nav-item">
+                    <a class="nav-link" href="/cabinet">Личный кабинет</a>
+                </li>
+                <li sec:authorize="hasAuthority('ADMIN')" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarBrandDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Управление брэндами
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarBrandDropdown">
+                        <li><a class="dropdown-item" th:href="@{/brand/add}">Добавить брэнд</a></li>
+                        <li><a class="dropdown-item" th:href="@{/brand/update}">Изменить брэнд</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasAuthority('ADMIN')" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarCarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Управление автомобилями
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarCarDropdown">
+                        <li><a class="dropdown-item" th:href="@{/car/add}">Добавить автомобиль</a></li>
+                        <li><a class="dropdown-item" th:href="@{/car/update}">Изменить автомобиль</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="isAuthenticated()" class="nav-item">
+                    <form th:action="@{/logout}" class="d-flex" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button class="btn btn-link nav-link" type="submit">Выйти</button>
+                    </form>
+                </li>
+            </ul>
+            <form th:action="@{/search}" class="d-flex" method="post">
+                <input class="form-control me-2" type="search" placeholder="KIA RIO" name="search" aria-label="Search">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button class="btn btn-outline-success" type="submit">Искать</button>
+            </form>
+        </div>
+    </div>
+</nav>

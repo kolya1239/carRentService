@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Список автомобилей</title>
+    <style type="text/css">
+        .link-light:hover {
+            color: #d1d8de !important;
+        }
+        .cursor-pointer{
+            cursor: pointer;
+        }
+        .imageBlock{
+            height: 20rem;
+        }
+        .carClassSortButtons > a{
+            cursor: pointer;
+            height: 4rem;
+        }
+
+        .carClassSortButtons > a > p{
+            transition-duration: 0.4s;
+        }
+
+        .carClassSortButtons > a:hover > p{
+            color: rgba(0,0,0,.55);
+        }
+    </style>
+</head>
+<body class="bg-primary">
+<nav th:replace="/header :: header"></nav>
+<div class="container-fluid text-white pt-5">
+    <div class="row justify-content-center">
+        <div th:text="${brand.name}" class="col-md-8 h2 text-center border-white"></div>
+        <div th:text="${brand.description}" class="col-md-8 text-center border-white"></div>
+        <div class="row col-md-8 carClassSortButtons justify-content-around text-center mt-3">
+            <!--/*@thymesVar id="carClass" type="com.example.carrentservice.enums.CarClass"*/-->
+            <a class="col-md-2 bg-light d-flex h3 border-3 justify-content-around align-items-center border-light rounded-3 mb-0 text-decoration-none text-primary" th:each="carClass : ${carClassList}">
+                <p class="mb-0" th:text="${carClass.getCode()}"></p>
+            </a>
+        </div>
+        <!--/*@thymesVar id="carId" type="java.util.int"*/-->
+        <div th:if="${carList.size()>0}" th:each="carId : ${#numbers.sequence(0, carList.size(), 3)}" class="col-md-10 row text-center justify-content-around mt-3 border-white">
+            <div class="col-3 d-flex justify-content-between text-center flex-column border border-3 border-light rounded-3" th:if="${carId < carList.size()}">
+                <div class="text-decoration-none row link-light pb-3">
+                    <div class="col-md-12 g-0 imageBlock">
+                        <img class="img-fluid mh-100 w-100" th:src="@{/images/{imgName}(imgName=${carList.get(carId).getImg()})}" alt="">
+                    </div>
+                    <p class="col-md-12 h3" th:text="${carList.get(carId).getMark()}"></p>
+                    <p class="col-md-12" th:text="${carList.get(carId).getDescription()}"></p>
+                    <p class="col-md-12" th:text="${carList.get(carId).getCarClass().getCode()} + ' класс'"></p>
+                    <p class="col-md-12" th:text="'Номер автомобиля: ' + ${carList.get(carId).getId().getLicencePlate()}"></p>
+                    <p class="col-md-12" th:text="'Код автомобиля: ' + ${carList.get(carId).getId().getRegistrationCode()}"></p>
+                    <p class="col-md-12" th:text="'Мощность двигателя(л.с): ' + ${carList.get(carId).getCarPower()}"></p>
+                    <p class="col-md-12" th:text="'Тип топлива: ' + ${carList.get(carId).getFuelType().getCode()}"></p>
+                    <p class="col-md-12" th:text="'Объем бензобака: ' + ${carList.get(carId).getTankCapacity()} + ' литров.'"></p>
+                    <p class="col-md-12" th:text="'Цена за день аренды: ' + ${carList.get(carId).getPrice()} + ' рублей.'"></p>
+                    <a th:href="@{/car/rent/{licencePlate}_{region}(licencePlate=${carList.get(carId).getId().getLicencePlate()}, region=${carList.get(carId).getId().getRegistrationCode()})}" class="col-md-12 row flex justify-content-center g-0 text-decoration-none link-light">
+                        <button class="btn btn-warning btn-lg col-md-8">Арендовать</button>
+                    </a>
+                </div>
+            </div>
+            <div class="col-3 d-flex justify-content-between text-center flex-column border border-3 border-light rounded-3"
+            th:if="${carId+1 < carList.size()}">
+                <div class="text-decoration-none row link-light">
+                    <div class="col-md-12 g-0 imageBlock">
+                        <img class="img-fluid mh-100 w-100" th:src="@{/images/{imgName}(imgName=${carList.get(carId+1).getImg()})}" alt="">
+                    </div>
+                    <p class="col-md-12 h3" th:text="${carList.get(carId+1).getMark()}"></p>
+                    <p class="col-md-12" th:text="${carList.get(carId+1).getDescription()}"></p>
+                    <p class="col-md-12"  th:text="${carList.get(carId+1).getCarClass().getCode()} + ' класс'"></p>
+                    <p class="col-md-12" th:text="'Номер автомобиля: ' + ${carList.get(carId+1).getId().getLicencePlate()}"></p>
+                    <p class="col-md-12" th:text="'Код автомобиля: ' + ${carList.get(carId+1).getId().getRegistrationCode()}"></p>
+                    <p class="col-md-12"  th:text="'Мощность двигателя(л.с): ' + ${carList.get(carId+1).getCarPower()}"></p>
+                    <p class="col-md-12"  th:text="'Тип топлива: ' + ${carList.get(carId+1).getFuelType().getCode()}"></p>
+                    <p class="col-md-12"  th:text="'Объем бензобака: ' + ${carList.get(carId+1).getTankCapacity()}"></p>
+                    <p class="col-md-12"  th:text="'Цена за день аренды: ' + ${carList.get(carId+1).getPrice()}"></p>
+                    <a th:href="@{/car/rent/{licencePlate}_{region}(licencePlate=${carList.get(carId+1).getId().getLicencePlate()}, region=${carList.get(carId+1).getId().getRegistrationCode()})}" class="col-md-12 row flex justify-content-center g-0 text-decoration-none link-light">
+                        <button class="btn btn-warning btn-lg col-md-8">Арендовать</button>
+                    </a>
+                </div>
+            </div>
+            <div class="col-3 d-flex justify-content-between text-center flex-column border border-3 border-light rounded-3"
+                 th:if="${carId+2 < carList.size()}">
+                <div class="text-decoration-none row link-light">
+                    <div class="col-md-12 g-0 imageBlock">
+                        <img class="img-fluid mh-100 w-100" th:src="@{/images/{imgName}(imgName=${carList.get(carId+2).getImg()})}" alt="">
+                    </div>
+                    <p class="col-md-12 h3" th:text="${carList.get(carId+2).getMark()}"></p>
+                    <p class="col-md-12"  th:text="${carList.get(carId+2).getDescription()}"></p>
+                    <p class="col-md-12"  th:text="${carList.get(carId+2).getCarClass().getCode()} + ' класс'"></p>
+                    <p class="col-md-12" th:text="'Номер автомобиля: ' + ${carList.get(carId+2).getId().getLicencePlate()}"></p>
+                    <p class="col-md-12" th:text="'Код автомобиля: ' + ${carList.get(carId+2).getId().getRegistrationCode()}"></p>
+                    <p class="col-md-12"  th:text="'Мощность двигателя(л.с): ' + ${carList.get(carId+2).getCarPower()}"></p>
+                    <p class="col-md-12"  th:text="'Тип топлива: ' + ${carList.get(carId+2).getFuelType().getCode()}"></p>
+                    <p class="col-md-12"  th:text="'Объем бензобака: ' + ${carList.get(carId+2).getTankCapacity()}"></p>
+                    <p class="col-md-12"  th:text="'Цена за день аренды: ' + ${carList.get(carId+2).getPrice()}"></p>
+                    <a th:href="@{/car/rent/{licencePlate}_{region}(licencePlate=${carList.get(carId+2).getId().getLicencePlate()}, region=${carList.get(carId+2).getId().getRegistrationCode()})}" class="col-md-12 row flex justify-content-center g-0 text-decoration-none link-light">
+                        <button class="btn btn-warning btn-lg col-md-8">Арендовать</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>

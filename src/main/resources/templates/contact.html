@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Связь с нами</title>
+    <style type="text/css">
+        .link-light:hover{
+            color:#d1d8de !important;
+        }
+        img {
+            width: 2rem;
+            height: 2rem;
+            transition-duration: 0.5s;
+        }
+        img:hover {
+            opacity: 0.4;
+            -webkit-filter: grayscale(100%);
+            filter: grayscale(100%);
+        }
+    </style>
+</head>
+<body class="bg-primary">
+<nav th:replace="/header :: header"> </nav>
+<div class="container-fluid text-white pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 h2 text-center border-white">Связь с нами</div>
+        <ul class="list-group col-md-8">
+            <li class="list-group-item bg-primary text-white border-white">Телефон: 8-800-555-35-35</li>
+            <li class="list-group-item bg-primary text-white border-white">Email: mail@gmail.com</li>
+            <li class="list-group-item bg-primary text-white text-center d-flex align-items-center flex-column border-white">
+                <p class="h4">Мы в соцсетях</p>
+                <ul class="list-group list-group-horizontal list-group-flush">
+                    <li class="list-group-item bg-primary border-0 text-white">
+                        <a href="https://vk.com">
+                            <img class="grey-out" th:src="@{/images/contactIcons/vk.svg}" alt="">
+                        </a>
+                    </li>
+                    <li class="list-group-item bg-primary border-0 text-white">
+                        <a href="https://instagram.com">
+                            <img th:src="@{/images/contactIcons/instagram.svg}" alt="">
+                        </a>
+                    </li>
+                    <li class="list-group-item bg-primary border-0 text-white">
+                        <a href="https://twitter.com">
+                            <img th:src="@{/images/contactIcons/twitter.svg}" alt="">
+                        </a>
+                    </li>
+                    <li class="list-group-item bg-primary border-0 text-white">
+                        <a href="https://facebook.com">
+                            <img th:src="@{/images/contactIcons/facebook.svg}" alt="">
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>

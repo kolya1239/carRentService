@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Личный кабинет</title>
+    <style type="text/css">
+        .link-light:hover{
+            color:#d1d8de !important;
+        }
+    </style>
+</head>
+<body class="bg-primary d-flex flex-column h-100">
+<nav th:replace="/header :: header"> </nav>
+<div class="container-fluid h-100 align-self-stretch gx-0 text-white">
+    <div class="row g-0 h-100 justify-content-around">
+        <div class="col-md border-end border-secondary gap-2 d-grid">
+            <a href="../user/update" class="gap-2 d-grid text-decoration-none">
+                <button class="btn btn-secondary" role="button">Обновить пользователя</button>
+            </a>
+            <a href="../user/updatePassword" class="gap-2 d-grid text-decoration-none">
+                <button class="btn btn-secondary" role="button">Обновить пароль</button>
+            </a>
+        </div>
+        <div class="col-md-10 d-block m-0 row pt-5">
+            <div th:if="${billList.size() == 0}" class="col-md-12 h3 text-center">Вы ещё не арендовали машин</div>
+            <table th:if="${billList.size()>0}" class="table border-0 text-white col-md-12">
+                <thead>
+                <caption class="h3 text-center text-white" style="caption-side: top">История аренды</caption>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Номер машины</th>
+                    <th scope="col">Код региона</th>
+                    <th scope="col">Марка автомобиля</th>
+                    <th scope="col">Дата начала аренды</th>
+                    <th scope="col">Дата конца аренды</th>
+                    <th scope="col">Цена аренды</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="billId : ${#numbers.sequence(0, billList.size()-1, 1)}">
+                    <th scope="row" th:text="${billId+1}"></th>
+                    <td>licence plate</td>
+                    <td>registration code</td>
+                    <td>mark</td>
+                    <td th:text="${billList.get(billId).getRentStartDate()}"></td>
+                    <td th:text="${billList.get(billId).getRentEndDate()}"></td>
+                    <td th:text="${billList.get(billId).getTotalPrice()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>

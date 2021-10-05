@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Работа с брендом</title>
+    <style type="text/css">
+        .link-light:hover {
+            color: #d1d8de !important;
+        }
+        .form-check-input:checked{
+            background-color: rgba(0,0,0,.55) !important;
+            border-color: rgba(0,0,0,.55) !important;
+        }
+        textarea {
+            height: 25rem;
+        }
+    </style>
+</head>
+<body class="bg-primary">
+<nav th:replace="/header :: header"></nav>
+<div class="container-fluid text-white pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12 h2 text-center" th:text="${addOrUpdateField} + ' брэнда'"></div>
+        <form class="col-md-6 mt-3" th:object="${brand}" onsubmit="return deleteOrUpdate(this);"  method="post">
+            <div class="mb-3">
+                <input type="hidden" class="form-control" hidden name="id" th:field="*{id}" >
+                <input type="text" class="form-control mb-3" id="name" placeholder="Название брэнда" name="name" th:field="*{name}" >
+                <textarea class="form-control" id="description" name="description" maxlength="1000" rows="3" placeholder="Данный брэнд самый..." th:field="*{description}"></textarea>
+            </div>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button th:formaction="@{/brand/addOrUpdate}" onclick="setFlag('send')" class="btn btn-outline-light mt-3" name="send">Отправить</button>
+            <button th:formaction="@{/brand/delete}" onclick="setFlag('delete')" th:if="${exists}" class="btn btn-danger mt-3" name="delete">Удалить</button>
+        </form>
+    </div>
+</div>
+
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    let flag;
+    function deleteOrUpdate(button){
+        if(flag === "send"){
+            return checkFields();
+        } else {
+            return confirm('Вы точно хотите удалить брэнд(все связанные с ним машины, тоже будут удалены).');
+        }
+    }
+    function checkFields(){
+        if(confirm("Вы уверены что хотите добавить/изменить брэнд?")){
+            let nameLength = document.getElementById('name').value.length;
+            if(3 < nameLength && nameLength < 45){
+                let descriptionLength = document.getElementById('description').value.length;
+                if(10 < descriptionLength && descriptionLength < 1000){
+                    return true;
+                } else {
+                    alert("Описание должно быть больше 10 символов и меньше 1000.");
+                    return false;
+                }
+            } else {
+                alert("Название должно быть больше 3 символов и меньше 45.");
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    function setFlag(flagValue){
+        flag = flagValue;
+    }
+</script>
+</body>
+</html>

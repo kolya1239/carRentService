@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Список брендов</title>
+    <style type="text/css">
+        .link-light:hover{
+            color:#d1d8de !important;
+        }
+    </style>
+</head>
+<body class="bg-primary bg-gradient">
+<nav th:replace="/header :: header"> </nav>
+<div class="container-fluid text-white pb-5">
+    <div class="row justify-content-around pt-5" th:each="brandId : ${#numbers.sequence(0, brandList.size(), 3)}">
+        <div class="col-3 d-flex justify-content-between text-center flex-column border border-3 border-light rounded-3" th:if="${brandId < brandList.size()}">
+            <a th:href="@{/brand/{name}(name=${brandList.get(brandId).getName()})}" class="text-decoration-none link-light">
+                <p class="h3" th:text="${brandList.get(brandId).getName()}"></p>
+                <p th:text="${brandList.get(brandId).getDescription()}"></p>
+                <div>
+                    <p th:text="'Количество машин: ' + ${brandList.get(brandId).getCars().size()}"></p>
+                    <p th:text="'Средняя цена: ' + ${averagePriceList.get(brandId)}"></p>
+                </div>
+            </a>
+        </div>
+        <div class="col-3 d-flex justify-content-between text-center flex-column border border-3 border-light rounded-3"
+             th:if="${brandId+1 < brandList.size()}">
+            <a th:href="@{/brand/{name}(name=${brandList.get(brandId+1).getName()})}" class="text-decoration-none link-light">
+                <p class="h3" th:text="${brandList.get(brandId+1).getName()}"></p>
+                <p th:text="${brandList.get(brandId+1).getDescription()}"></p>
+                <div>
+                    <p th:text="'Количество машин: ' + ${brandList.get(brandId+1).getCars().size()}"></p>
+                    <p th:text="'Средняя цена: ' + ${averagePriceList.get(brandId+1)}"></p>
+                </div>
+            </a>
+        </div>
+        <div class="col-3 d-flex justify-content-between text-center flex-column border border-3 border-light rounded-3"
+             th:if="${brandId+2 < brandList.size()}">
+            <a th:href="@{/brand/{name}(name=${brandList.get(brandId+2).getName()})}" class="text-decoration-none link-light">
+                <p class="h3" th:text="${brandList.get(brandId+2).getName()}"></p>
+                <p th:text="${brandList.get(brandId+2).getDescription()}"></p>
+                <div>
+                    <p th:text="'Количество машин: ' + ${brandList.get(brandId+2).getCars().size()}"></p>
+                    <p th:text="'Средняя цена: ' + ${averagePriceList.get(brandId+2)}"></p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>

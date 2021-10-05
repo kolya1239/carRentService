@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Выберите изменяемый объект</title>
+    <style type="text/css">
+        .link-light:hover {
+            color: #d1d8de !important;
+        }
+        .form-check-input:checked{
+            background-color: rgba(0,0,0,.55) !important;
+            border-color: rgba(0,0,0,.55) !important;
+        }
+        textarea {
+            height: 25rem;
+        }
+    </style>
+</head>
+<body class="bg-primary">
+<nav th:replace="/header :: header"></nav>
+<div class="container-fluid text-white pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12 h2 text-center">Выберите изменяемый элемент</div>
+        <form class="col-md-6 mt-3" th:action="@{'/'+${type}+'/updateForm'}" method="get">
+            <select th:if="${additionalInfoList == null}" class="mb-3 form-select" name="selector" aria-label="Выберите изменяемый элемент">
+                <option th:each="selector : ${selectorList}" th:value="${selector}" th:text="${selector}"></option>
+            </select>
+            <select th:if="${additionalInfoList != null}" class="mb-3 form-select" name="selector" aria-label="Выберите изменяемый элемент">
+                <option th:each="id : ${#numbers.sequence(0, selectorList.size()-1, 1)}" th:value="${selectorList.get(id) + ' ' + additionalInfoList.get(id)}" th:text="${selectorList.get(id) + ' ' + additionalInfoList.get(id)}"></option>
+            </select>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button class="btn btn-outline-light mt-3">Отправить</button>
+        </form>
+    </div>
+</div>
+
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>
