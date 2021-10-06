@@ -43,8 +43,8 @@
                 <tr th:each="billId : ${#numbers.sequence(0, billList.size()-1, 1)}">
                     <th scope="row" th:text="${billId+1}"></th>
                     <td th:text="${'Номер машины - '+billList.get(billId).getCar().getLicencePlate()}"></td>
-                    <td>registration code</td>
-                    <td>mark</td>
+                    <td th:text="${'Код региона - '+billList.get(billId).getCar().getRegistrationCode()}"></td>
+                    <td th:text="${billList.get(billId).getCar().getMark()}"></td>
                     <td th:text="${billList.get(billId).getRentStartDate()}"></td>
                     <td th:text="${billList.get(billId).getRentEndDate()}"></td>
                     <td th:text="${billList.get(billId).getTotalPrice()}"></td>
