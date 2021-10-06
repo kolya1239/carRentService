@@ -39,10 +39,6 @@ public class BrandController {
         System.out.println("                               ");
         System.out.println("                               ");
         System.out.println(brand.getDescription());
-        ByteBuffer buffer = StandardCharsets.UTF_8.encode(brand.getDescription());
-        String utf8EncodedString = StandardCharsets.UTF_8.decode(buffer).toString();
-        System.out.println(utf8EncodedString);
-        System.out.println(brand.getDescription().equals(utf8EncodedString));
         System.out.println("                               ");
         System.out.println("                               ");
         brandService.addOrUpdateBrand(brand);
