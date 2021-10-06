@@ -56,7 +56,7 @@ public class BrandService implements BrandServiceInterface {
 
     @Override
     public void addOrUpdateBrand(Brand brand) {
-        brandRepository.saveAndFlush(brand);
+        brandRepository.save(brand);
     }
 
     private Brand ifBrandFound(Brand brand) throws NoSuchElementInDatabaseException {
