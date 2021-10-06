@@ -17,6 +17,9 @@
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <property name="hibernate.connection.characterEncoding">utf8</property>
+        <property name="hibernate.connection.useUnicode">true</property>
+        <property name="hibernate.connection.charSet">UTF-8</property>
     </properties>
     <dependencies>
         <dependency>
