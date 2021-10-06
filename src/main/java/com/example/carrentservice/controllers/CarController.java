@@ -54,7 +54,7 @@ public class CarController {
             model.addAttribute("brandList", brandService.getBrandList());
             model.addAttribute("exists", true);
         }
-        return "/car/addUpdateForm";
+        return "car/addUpdateForm";
     }
 
     @PostMapping("/addOrUpdate")

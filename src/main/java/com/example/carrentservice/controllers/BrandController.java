@@ -29,7 +29,7 @@ public class BrandController {
             model.addAttribute("addOrUpdateField", "Обновление");
             model.addAttribute("exists", true);
         }
-        return "/brand/addUpdateForm";
+        return "brand/addUpdateForm";
     }
 
     @PostMapping("/addOrUpdate")
