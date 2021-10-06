@@ -34,6 +34,11 @@ public class BrandController {
 
     @PostMapping("/addOrUpdate")
     public String addUpdateBrand(Model model, @ModelAttribute Brand brand){
+        System.out.println("                               ");
+        System.out.println("                               ");
+        System.out.println(brand.getDescription());
+        System.out.println("                               ");
+        System.out.println("                               ");
         brandService.addOrUpdateBrand(brand);
         return "redirect:/";
     }
