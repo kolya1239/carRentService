@@ -56,7 +56,6 @@ public class BrandService implements BrandServiceInterface {
 
     @Override
     public void addOrUpdateBrand(Brand brand) {
-        System.out.println(brand.getDescription());
         brandRepository.save(brand);
     }
 
