@@ -36,12 +36,12 @@
     <div class="row justify-content-center">
         <div th:text="${brand.name}" class="col-md-8 h2 text-center border-white"></div>
         <div th:text="${brand.description}" class="col-md-8 text-center border-white"></div>
-        <div class="row col-md-8 carClassSortButtons justify-content-around text-center mt-3">
-            <!--/*@thymesVar id="carClass" type="com.example.carrentservice.enums.CarClass"*/-->
-            <a class="col-md-2 bg-light d-flex h3 border-3 justify-content-around align-items-center border-light rounded-3 mb-0 text-decoration-none text-primary" th:each="carClass : ${carClassList}">
-                <p class="mb-0" th:text="${carClass.getCode()}"></p>
-            </a>
-        </div>
+<!--        <div class="row col-md-8 carClassSortButtons justify-content-around text-center mt-3">-->
+<!--            &lt;!&ndash;/*@thymesVar id="carClass" type="com.example.carrentservice.enums.CarClass"*/&ndash;&gt;-->
+<!--            <a class="col-md-2 bg-light d-flex h3 border-3 justify-content-around align-items-center border-light rounded-3 mb-0 text-decoration-none text-primary" th:each="carClass : ${carClassList}">-->
+<!--                <p class="mb-0" th:text="${carClass.getCode()}"></p>-->
+<!--            </a>-->
+<!--        </div>-->
         <!--/*@thymesVar id="carId" type="java.util.int"*/-->
         <div th:if="${carList.size()>0}" th:each="carId : ${#numbers.sequence(0, carList.size(), 3)}" class="col-md-10 row text-center justify-content-around mt-3 border-white">
             <div class="col-3 d-flex justify-content-between text-center flex-column border border-3 border-light rounded-3" th:if="${carId < carList.size()}">
