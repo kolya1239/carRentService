@@ -1,5 +1,8 @@
 package com.example.carrentservice.controllers;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.api.ApiResponse;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.carrentservice.entities.Bill;
 import com.example.carrentservice.entities.Car;
 import com.example.carrentservice.entities.User;
@@ -20,10 +23,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -34,6 +38,8 @@ public class CarController {
     CarService carService;
     UserService userService;
     BillService billService;
+    Cloudinary cloudinaryConfig;
+
 
     @RequestMapping(value = {"/add","/updateForm"}, method = {RequestMethod.GET})
     public String addUpdate(Model model, @RequestParam(value = "selector", required = false) String carIdString, HttpServletRequest httpServletRequest) throws NoSuchElementInDatabaseException {
@@ -62,15 +68,19 @@ public class CarController {
             Model model,
             @RequestParam(value = "brandId") int brandId,
             @RequestParam(value = "imageFile", required = false) MultipartFile multipartFile,
-            @ModelAttribute Car car) throws IOException, NoSuchElementInDatabaseException
-    {
-        if(carService.findCar(car.getId()) != null && !multipartFile.getOriginalFilename().isBlank()) {
-            ImagesHelperUtil.deleteFile("src/main/resources/static/images", carService.findCar(car.getId()).getImg());
-        }
-        if(!multipartFile.getOriginalFilename().isBlank()){
-            String fileName = UUID.randomUUID().toString() + StringUtils.cleanPath(multipartFile.getOriginalFilename());
-            car.setImg(fileName);
-            ImagesHelperUtil.saveFile("src/main/resources/static/images", fileName, multipartFile);
+            @ModelAttribute Car car) throws Exception {
+
+        if(!multipartFile.getOriginalFilename().isBlank()) {
+            if (carService.findCar(car.getId()) != null) {
+                HashMap options = new HashMap();
+                options.put("invalidate", true);
+                String[] splittedCarImg = carService.findCar(car.getId()).getImg().split("/");
+                String publicId = splittedCarImg[splittedCarImg.length-1].split("\\.")[0];
+                cloudinaryConfig.uploader().destroy(publicId, options);
+            }
+            File img = convertMultiPartToFile(multipartFile);
+            Map uploadResult = cloudinaryConfig.uploader().upload(img, ObjectUtils.emptyMap());
+            car.setImg(uploadResult.get("url").toString());
         }
         car.setBrand(brandService.findBrand(brandId));
         carService.addOrUpdateCar(car);
@@ -147,5 +157,32 @@ public class CarController {
     @Autowired
     public void setBillService(BillService billService) {
         this.billService = billService;
+    }
+
+    public Cloudinary getCloudinaryConfig() {
+        return cloudinaryConfig;
+    }
+
+    @Autowired
+    public void setCloudinaryConfig(Cloudinary cloudinaryConfig) {
+        this.cloudinaryConfig = cloudinaryConfig;
+    }
+
+    private File convertMultiPartToFile(MultipartFile file) throws IOException {
+        File convFile = new File(file.getOriginalFilename());
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convFile;
+    }
+
+    private void showCloudinaryImages() throws Exception {
+        ApiResponse result = cloudinaryConfig.search()
+                .expression("resource_type:image")
+                .execute();
+        ArrayList images = (ArrayList) result.values().toArray()[0];
+        for (int i = 0; i < images.size(); i++) {
+            System.out.println(images.get(i));
+        }
     }
 }
