@@ -23,7 +23,7 @@
             <div class="row d-block col-md text-center">
                 <div class="col-md-12 h2" th:text="${car.getMark()}"></div>
                 <div class="col-md-12 g-0 imageBlock text-center">
-                    <img class="img-fluid mh-100 w-100" th:src="@{/images/{imgName}(imgName=${car.getImg()})}" alt="">
+                    <img class="img-fluid mh-100 w-100" th:src="@{{imgName}(imgName=${car.getImg()})}" alt="">
                 </div>
                 <div class="col-md-12 h4 mt-3" th:text="${'Номер автомобиля: ' + car.getLicencePlate()}"></div>
                 <div class="col-md-12 h4 mt-3" th:text="${'Регистрационный код: ' + car.getRegistrationCode()}"></div>
