@@ -46,20 +46,19 @@ public class CarController {
         if(httpServletRequest.getRequestURI().contains("add")) {
             model.addAttribute("car", new Car());
             model.addAttribute("addOrUpdateField", "Добавление");
-            model.addAttribute("carClassList", CarClass.values());
-            model.addAttribute("fuelTypeList", FuelType.values());
-            model.addAttribute("brandList", brandService.getBrandList());
             model.addAttribute("exists", false);
         } else {
             List<String> plateAndCode = Arrays.stream(carIdString.split(" ")).collect(Collectors.toList());
             CarId carId = new CarId(plateAndCode.get(0), plateAndCode.get(1));
             model.addAttribute("car", carService.findCar(carId));
             model.addAttribute("addOrUpdateField", "Обновление");
-            model.addAttribute("carClassList", CarClass.values());
-            model.addAttribute("fuelTypeList", FuelType.values());
-            model.addAttribute("brandList", brandService.getBrandList());
             model.addAttribute("exists", true);
         }
+        model.addAttribute("carLicencePlateList", carService.getCarLicencePlateList());
+        model.addAttribute("carRegistrationCodeList", carService.getCarRegistrationCodeList());
+        model.addAttribute("carClassList", CarClass.values());
+        model.addAttribute("fuelTypeList", FuelType.values());
+        model.addAttribute("brandList", brandService.getBrandList());
         return "car/addUpdateForm";
     }
 
@@ -68,28 +67,45 @@ public class CarController {
             Model model,
             @RequestParam(value = "brandId") int brandId,
             @RequestParam(value = "imageFile", required = false) MultipartFile multipartFile,
+            @RequestParam(value = "oldLicencePlate", required = false) String oldLicencePlate,
+            @RequestParam(value = "oldRegistrationCode", required = false) String oldRegistrationCode,
             @ModelAttribute Car car) throws Exception {
-
+        CarId oldCarId = null;
+        if(oldLicencePlate != null && oldRegistrationCode != null){
+            oldCarId = new CarId(oldLicencePlate, oldRegistrationCode);
+        }
+        if(oldCarId != null && !car.getId().equals(oldCarId) && carService.findCar(car.getId()) != null){
+            return "redirect:/";
+        }
         if(!multipartFile.getOriginalFilename().isBlank()) {
-            if (carService.findCar(car.getId()) != null) {
+            if(oldCarId != null){
                 HashMap options = new HashMap();
                 options.put("invalidate", true);
-                String[] splittedCarImg = carService.findCar(car.getId()).getImg().split("/");
+                String[] splittedCarImg = carService.findCar(oldCarId).getImg().split("/");
                 String publicId = splittedCarImg[splittedCarImg.length-1].split("\\.")[0];
                 cloudinaryConfig.uploader().destroy(publicId, options);
             }
             File img = convertMultiPartToFile(multipartFile);
             Map uploadResult = cloudinaryConfig.uploader().upload(img, ObjectUtils.emptyMap());
             car.setImg(uploadResult.get("url").toString());
+        } else {
+            car.setImg(carService.findCar(oldCarId).getImg());
         }
         car.setBrand(brandService.findBrand(brandId));
         carService.addOrUpdateCar(car);
+        if(oldCarId != null && !car.getId().equals(oldCarId)){
+            carService.deleteCar(oldCarId);
+        }
         return "redirect:/";
     }
 
     @PostMapping("/delete")
     public String delete(Model model, @ModelAttribute Car car) throws IOException{
-        ImagesHelperUtil.deleteFile("src/main/resources/static/images", carService.findCar(car.getId()).getImg());
+        HashMap options = new HashMap();
+        options.put("invalidate", true);
+        String[] splittedCarImg = carService.findCar(car.getId()).getImg().split("/");
+        String publicId = splittedCarImg[splittedCarImg.length-1].split("\\.")[0];
+        cloudinaryConfig.uploader().destroy(publicId, options);
         carService.deleteCar(car.getId());
         return "redirect:/";
     }
